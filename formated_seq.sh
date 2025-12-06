@@ -10,7 +10,7 @@ awk 'NR%4==1{print ">"substr($0,2)} NR%4==2{print}' "$INPUT" > "$OUTPUT"
 done
 
 cat fasta_parts/${SAMPLE}_part1.fasta fasta_parts/${SAMPLE}_part2.fasta fasta_parts/${SAMPLE}_part3.fasta > processed/${SAMPLE}.fasta
-echo "Created processed/${SAMPLE}.fasta"
+echo "Created procegit stssed/${SAMPLE}.fasta"
 echo
 done < samples.txt
 echo "All sample done"
