@@ -23,4 +23,4 @@ Wrote 32 protein sequences
 Wrote 24 sequences 4 sample and 20 reference sequence
 
 6. improved_for_alignment.fasta is used for MSA in clustal Omega and phylogenetic tree was achieved for interpretation. 
-#
+# Result of alignment in - Aligned_sequences.fasta
