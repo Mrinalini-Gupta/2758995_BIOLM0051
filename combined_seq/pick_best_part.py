@@ -4,10 +4,8 @@ import sys
 if len(sys.argv) != 3:
     print("Usage: python pick_best_parts.py <input_orf_fasta> <output_fasta>")
     sys.exit(1)
-
 input_fasta = sys.argv[1]
 output_fasta = sys.argv[2]
-
 # Define which IDs belong to each sample
 sample_groups = {
     "SampleA": ["sampleA_part_1", "sampleA_part_2", "sampleA_part_3"],
@@ -15,45 +13,36 @@ sample_groups = {
     "SampleC": ["sampleC_part1", "sampleC_part2", "sampleC_part3"],
     "SampleD": ["sampleD_part1", "sampleD_part2", "sampleD_part3"],
 }
-
 # Read all records
 records = list(SeqIO.parse(input_fasta, "fasta"))
 id_to_record = {rec.id: rec for rec in records}
 
 output_records = []
 
-# 1) For each sample, choose the "best" part = longest protein sequence
+# For each sample, choose the "best" part = longest protein sequence
 for sample_name, part_ids in sample_groups.items():
     best_rec = None
     best_len = -1
-
     for pid in part_ids:
         if pid not in id_to_record:
             continue
         rec = id_to_record[pid]
         length = len(rec.seq)
-
         if length > best_len:
             best_len = length
             best_rec = rec
-
     if best_rec is None:
         print(
             f"WARNING: no parts found for {sample_name}, skipping this sample.")
         continue
-
-    # Option A: keep original ID (e.g. SAMPLEA_PART_2)
-    # Option B: rename to just SAMPLEA (nicer in tree)
     best_sample_rec = SeqRecord(
         best_rec.seq,
-        id=sample_name,  # rename to SAMPLEA / SAMPLEB / SAMPLEC / SAMPLED
+        id=sample_name,
         description=f"best part ({best_rec.id}), length={best_len} aa"
     )
-
     output_records.append(best_sample_rec)
     print(f"{sample_name}: selected {best_rec.id} (length {best_len} aa) as best part.")
-
-# Helper to check if an ID is one of the sample parts
+# Checks if ID is one of the sample parts
 
 
 def is_sample_part(rec_id: str) -> bool:
@@ -63,11 +52,10 @@ def is_sample_part(rec_id: str) -> bool:
     return False
 
 
-# 2) Add all reference sequences unchanged
+# Add all reference sequences unchanged
 for rec in records:
     if not is_sample_part(rec.id):
         output_records.append(rec)
-
-# 3) Write new FASTA
+# Write new FASTA
 SeqIO.write(output_records, output_fasta, "fasta")
 print(f"Wrote {len(output_records)} sequences to {output_fasta}")
